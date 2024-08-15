@@ -35,6 +35,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
@@ -219,7 +220,11 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
             // Check for low storage.  If there is low storage, the native library will not be
             // downloaded, so detection will not become operational.
             IntentFilter lowstorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
-            boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
+            boolean hasLowStorage = ContextCompat.registerReceiver(
+                    context,
+                    null,
+                    lowstorageFilter,
+                    ContextCompat.RECEIVER_EXPORTED) != null;
 
             if (hasLowStorage) {
                 Toast.makeText(this, R.string.low_storage_error, Toast.LENGTH_LONG).show();
@@ -266,7 +271,11 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                 }
             }
         };
-        registerReceiver(finishBroadcast, new IntentFilter("finishCapture"));
+        ContextCompat.registerReceiver(
+            this,
+            finishBroadcast,
+            new IntentFilter("finishCapture"),
+            ContextCompat.RECEIVER_EXPORTED);
     }
 
     /**
